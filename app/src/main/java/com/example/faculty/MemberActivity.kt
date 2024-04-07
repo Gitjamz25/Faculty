@@ -1,5 +1,6 @@
 package com.example.faculty
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -38,8 +39,8 @@ class MemberActivity : AppCompatActivity() {
 
                 // Display success message
                 Toast.makeText(this, "Member added successfully!", Toast.LENGTH_SHORT).show()
-
-                finish() // Close the activity after saving
+                val intent = Intent(this@MemberActivity, ListMemberActivity::class.java)
+                startActivity(intent)
             }
         }
     }

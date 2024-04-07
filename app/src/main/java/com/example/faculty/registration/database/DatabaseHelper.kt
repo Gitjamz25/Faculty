@@ -44,5 +44,51 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.insert(TABLE_NAME, null, values)
         db.close()
     }
+    fun updateMember(originalName: String, newName: String, newEmail: String, newPhone: String) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_NAME, newName)
+            put(COLUMN_EMAIL, newEmail)
+            put(COLUMN_PHONE, newPhone)
+        }
+        db.update(TABLE_NAME, values, "$COLUMN_NAME = ?", arrayOf(originalName))
+        db.close()
+    }
+    fun deleteMember(memberName: String) {
+        val db = writableDatabase
+        db.delete(TABLE_NAME, "$COLUMN_NAME = ?", arrayOf(memberName))
+        db.close()
+    }
+    fun deleteAllData() {
+        val db = writableDatabase
+        db.delete("members", null, null)
+        db.close()
+    }
+    fun getAllMembers(): List<Member> {
+        val members = mutableListOf<Member>()
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_NAME,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+        cursor?.use { cursor ->
+            while (cursor.moveToNext()) {
+                val name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME))
+                val email = cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL))
+                val phone = cursor.getString(cursor.getColumnIndex(COLUMN_PHONE))
+                val member = Member(name, email, phone)
+                members.add(member)
+            }
+        }
+        cursor?.close()
+        db.close()
+        return members
+    }
+
 
 }
